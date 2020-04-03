@@ -1,10 +1,10 @@
 print('----------seer----------\n\n请注意：此报文解析只适用于标准的1363协议!'
       '\n用户自定义部分，请通知我司进行适配！\n\n----------seer----------\n')
 while True:
-    user_input = list( input( '请输入电池报文：' ).split( ' ' ) )
+    user_input = list(input('请输入电池报文：').strip().split(' '))
     if user_input[0].lower() == '7e' and user_input[-1].lower() == '0d':
 
-        print('报文信息:\n')
+        print('\n报文信息:\n')
 
         # Pack的数量
         pack_num = [chr(int(b, 16)) for b in user_input[15:17]]
@@ -35,8 +35,14 @@ while True:
             tempe_n_behind = tempe_n_front + 4
             temperature_one = [chr(int(b, 16)) for b in user_input[tempe_n_front:tempe_n_behind]]
             temperature_one_sum = ''.join(temperature_one)
-            temperature_one_true = [int(temperature_one_sum, 16) - 40]
-            tem.append(temperature_one_true)
+
+            temperature_one_true_one = [int(temperature_one_sum, 16) - 40]
+            temperature_one_true_two = [int(temperature_one_sum, 16)]
+
+            if temperature_one_sum[0:2] == '00':
+                tem.append(temperature_one_true_one)
+            else:
+                tem.append([(int(temperature_one_true_two.pop()) - 2731)/10])
             num += 1
         print('当前温度值：{}℃\n'.format(int(max(tem).pop())))
 
@@ -52,7 +58,7 @@ while True:
             print('充电电流值:{}A\n'.format(pack))
 
         # 计算电池的电压：
-        voltage_range = [chr( int( b, 16 ) ) for b in user_input[tempe_n_behind + 4 :tempe_n_behind + 8]]
+        voltage_range = [chr(int(b, 16)) for b in user_input[tempe_n_behind + 4 :tempe_n_behind + 8]]
         voltage_sum = ''.join(voltage_range)
         voltage_true = int(voltage_sum,16)/1000
         print('当前电压值:{:.2f}V\n'.format(voltage_true))
@@ -75,6 +81,7 @@ while True:
         print('充放电次数:{}次\n'.format( recharge_dicharge_time_sum_true ) )
 
         affirm_again = input('是否检测下一次电池报文信息(y/n):')
+
         if affirm_again == 'y':
             continue
         else:
