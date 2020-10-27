@@ -77,6 +77,7 @@ int listlen()
 	 return current;
   } 
   
+
   //删除中间的那个节点， 返回值1，表示删除成功，0表示删除失败;
   //需要多一个空的节点，来使用一下， 
   int deldata(char *name)
